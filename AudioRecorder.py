@@ -6,6 +6,7 @@ RECORD_TIMEOUT = 3
 ENERGY_THRESHOLD = 1000
 DYNAMIC_ENERGY_THRESHOLD = False
 
+
 class BaseRecorder:
     def __init__(self, source, source_name):
         self.recorder = sr.Recognizer()
