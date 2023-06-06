@@ -82,10 +82,8 @@ class SetupWindow(QWidget):
 
         self.file_dropdown = QComboBox()
 
-
         self.load_file_button = QPushButton("Load Selected Call")
         self.load_file_button.clicked.connect(self.load_file)
-
 
         self.nofiles_label = QLabel()
 
@@ -152,6 +150,7 @@ class ChatApp(QWidget):
     def __init__(self, speaker_name, loaded_db=None):
         super().__init__()
         self.chat = GPTChat()
+        self.chat_for_objection_detection = GPTChat() # This is a separate instance of GPTChat used to avoid weird threading issues - better way to do this?
         self.audio_process = AudioProcess()
         self.global_transcriber = self.audio_process.global_transcriber
 
@@ -290,7 +289,6 @@ class ChatApp(QWidget):
 
     @pyqtSlot()
     def on_send(self):
-        self.timer_for_objection_detection.stop()
         user_message = self.input_box.text()
         if user_message:
             self.input_box.clear()
@@ -303,7 +301,6 @@ class ChatApp(QWidget):
             self.response_label_text = "Generating response"
 
             threading.Thread(target=self.get_response, args=(user_message,)).start()
-
 
     def update_placeholder(self):
         if len(self.placeholder_text) < 3:
@@ -324,7 +321,6 @@ class ChatApp(QWidget):
             + "SalesGPT: " + "</b>" + response + "</div>")
         self.chat_history_box.update()
         self.chat_history_box.moveCursor(QTextCursor.End)
-        self.timer_for_objection_detection.start()
 
     def save_transcript(self):
         try:
@@ -356,7 +352,7 @@ class ChatApp(QWidget):
         recent_transcript = self.transcript[self.sent_to_gpt_count:]
         recent_transcript = recent_transcript[-500:]
         if len(recent_transcript) > 50:
-            response = self.chat.generate_response_from_sales_call(recent_transcript)
+            response = self.chat_for_objection_detection.generate_response_from_sales_call(recent_transcript)
             if response is not None:
                 self.sent_to_gpt_count = len(self.transcript)
                 self.chat_history_box.append(
@@ -364,6 +360,7 @@ class ChatApp(QWidget):
                     + "SalesGPT: " + "</b>" + response + "</div>")
                 self.chat_history_box.update()
                 self.chat_history_box.moveCursor(QTextCursor.End)
+                self.chat.messages.append(response) # adds the response to the chat history - not sure if this is the best way to do it
 
 
 
