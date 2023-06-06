@@ -13,7 +13,7 @@ Demo video here
 1. Clone the repository and navigate to the project directory 
   ```
   git clone https://github.com/e-johnstonn/salesGPT.git
-     cd salesGPT       
+  cd salesGPT       
   ```
 2. Install required packages:
   ```pip install -r requirements.txt```
