@@ -27,7 +27,7 @@ def load_stylesheet(filename):
 
 
 HTML_MESSAGE_TEMPLATE = """
-<div style='background-color:#b1b1af; padding:10px; margin:15px; border-radius:15px; color:#333333; font-family:Roboto; font-size:12pt; box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);'><b>"""
+<div style='background-color:#d7d7d6; padding:10px; margin:15px; border-radius:15px; color:#333333; font-family:Roboto; font-size:12pt; box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);'><b>"""
 
 class AudioProcess:
     def __init__(self):

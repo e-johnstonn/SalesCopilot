@@ -1,9 +1,8 @@
 QWidget {
-    background-color: #a8a8a5;
-    color: #2C2C2C;
-    selection-background-color: #8F97A2;
+    background-color: #d8d8d8;
+    color: #333;
     font-family: 'Roboto', sans-serif;
-    border-radius: 10px;
+    border-radius: 5px;
 }
 
 QTabWidget::pane {
@@ -11,55 +10,57 @@ QTabWidget::pane {
 }
 
 QTabBar::tab {
-    color: #2C2C2C;
-    background-color: #67A2D8;
-    padding: 5px;
-    border: 0;
+    color: #333;
+    background-color: #E8E8E8;
+    padding: 10px;
+    border: 1px solid #8c8c8c;
     border-radius: 5px;
     margin-right: 5px;
 }
 
 QTabBar::tab:selected {
-    background-color: #4D86C3;
+    background-color: #CCCCCC;
 }
 
 QTextEdit {
-    font-size: 12pt;
-    color: #2C2C2C;
-    background-color: #D8D8D8;
-    border: none;
+    font-size: 10pt;
+    color: #333;
+    background-color: #F6F6F6;
+    border: 1px solid #E8E8E8;
     padding: 5px;
-    border-radius: 10px;
+    border-radius: 5px;
 }
 
 QLineEdit {
-    font-size: 14pt;
-    color: #2C2C2C;
-    background-color: #D8D8D8;
-    border: none;
+    font-size: 12pt;
+    color: #333;
+    background-color: #F6F6F6;
+    border: 1px solid #E8E8E8;
     padding: 5px;
-    border-radius: 10px;
+    border-radius: 5px;
 }
 
 QPushButton {
     font-size: 14pt;
-    color: #2C2C2C;
-    background-color: #4D86C3;
+    color: #F6F6F6;
+    background-color: #333;
     border: none;
     padding: 10px;
-    border-radius: 15px;
+    border-radius: 5px;
+    letter-spacing: 0.5px;
 }
 
 QPushButton:hover {
-    background-color: #3677B1;
+    background-color: #555;
 }
 
 QPushButton:pressed {
-    background-color: #24567F;
+    background-color: #222;
 }
 
 QLabel {
-    color: #2C2C2C;
+    color: #333;
     font-family: 'Roboto';
     font-size: 15px;
 }
+
