@@ -147,6 +147,10 @@ class WorkerThread(QThread):
 
 
 class ChatApp(QWidget):
+    TRANSCRIPT_CHECK_INTERVAL = 3000
+    RESPONSE_CHECK_INTERVAL = 1000
+    OBJECTION_CHECK_INTERVAL = 5000
+    FILENAME_TIMESTAMP_FORMAT = "%d-%m-%Y_%H-%M-%S"
     def __init__(self, speaker_name, loaded_db=None):
         super().__init__()
         self.chat = GPTChat()
@@ -156,21 +160,18 @@ class ChatApp(QWidget):
 
         self.speaker_name = speaker_name
 
-
-
-
         self.timer = QTimer()
         self.timer.timeout.connect(self.update_transcript)
-        self.timer.start(3000)
+        self.timer.start(self.TRANSCRIPT_CHECK_INTERVAL)
 
         self.response_timer = QTimer()
         self.response_timer.timeout.connect(self.update_placeholder)
-        self.response_timer.start(1000)
+        self.response_timer.start(self.RESPONSE_CHECK_INTERVAL)
         self.placeholder_text = ''
 
         self.timer_for_objection_detection = QTimer()
         self.timer_for_objection_detection.timeout.connect(self.objection_detection_thread)
-        self.timer_for_objection_detection.start(5000)
+        self.timer_for_objection_detection.start(self.OBJECTION_CHECK_INTERVAL)
         self.first = False
 
         self.db = loaded_db
@@ -254,12 +255,6 @@ class ChatApp(QWidget):
 
     @pyqtSlot()
     def update_transcript(self):
-        # if self.first:
-        #     self.timer_for_objection_detection = QTimer()
-        #     self.timer_for_objection_detection.timeout.connect(self.sales_testing_thread)
-        #     self.timer_for_objection_detection.start(5000)
-        #     self.first = False
-
         scrollbar = self.transcript_box.verticalScrollBar()
         value = scrollbar.value()
         at_bottom = value == scrollbar.maximum()
@@ -325,10 +320,10 @@ class ChatApp(QWidget):
     def save_transcript(self):
         try:
             transcript = self.transcript
-            date = datetime.now().strftime("%d-%m-%Y")
+            timestamp = datetime.now().strftime(self.FILENAME_TIMESTAMP_FORMAT)
             db_lock = threading.Lock()
             with db_lock:
-                with open(f'transcripts/{self.speaker_name}_{date}.txt', 'w') as f:
+                with open(f'transcripts/{self.speaker_name}_{timestamp}.txt', 'w') as f:
                     f.write(transcript)
         except Exception as e:
             print(e)
