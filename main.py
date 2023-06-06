@@ -36,7 +36,7 @@ class AudioProcess:
         self.user_audio_recorder = AudioRecorder.DefaultMicRecorder()
         self.user_audio_recorder.record_into_queue(self.audio_queue)
 
-        time.sleep(1)
+        time.sleep(.1)
 
         self.speaker_audio_recorder = AudioRecorder.DefaultSpeakerRecorder()
         self.speaker_audio_recorder.record_into_queue(self.audio_queue)
