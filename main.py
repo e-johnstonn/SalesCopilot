@@ -54,7 +54,7 @@ class SetupWindow(QWidget):
         self.setWindowTitle("SalesGPT Setup")
         self.setWindowIcon(
             QIcon('app_icon.png'))  # Set the app icon, ensure the file 'app_icon.png' is in your directory
-        self.resize(500, 300)
+        self.resize(500, 200)
 
         self.layout = QVBoxLayout(self)
 
@@ -72,9 +72,7 @@ class SetupWindow(QWidget):
         self.tab1.setLayout(self.tab1_layout)
         self.tab2.setLayout(self.tab2_layout)
 
-        self.welcome_message = QLabel("""<h2>Welcome!</h2>
-                    <h3>Enter the name of the person you will be speaking to and click 'Start Call'.</h3>
-                """)
+        self.welcome_message = QLabel(""" <h3>Enter the name of the person you will be speaking to and click 'Start Call'.</h3> """)
 
         self.speaker_name_input = QLineEdit()
         self.speaker_name_input.setPlaceholderText("Enter Name Here")
