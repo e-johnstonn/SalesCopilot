@@ -19,6 +19,16 @@ from dotenv import load_dotenv
 
 load_dotenv('keys.env')
 
+
+def load_stylesheet(filename):
+    with open(filename) as file:
+        return file.read()
+
+
+
+HTML_MESSAGE_TEMPLATE = """
+<div style='background-color:#b1b1af; padding:10px; margin:15px; border-radius:15px; color:#333333; font-family:Roboto; font-size:12pt; box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);'><b>"""
+
 class AudioProcess:
     def __init__(self):
         self.audio_queue = queue.Queue()
@@ -44,30 +54,11 @@ class SetupWindow(QWidget):
         self.setWindowTitle("SalesGPT Setup")
         self.setWindowIcon(
             QIcon('app_icon.png'))  # Set the app icon, ensure the file 'app_icon.png' is in your directory
-        self.setStyleSheet("""
-                    background-color: #222222;
-                    color: #ffffff;
-                    selection-background-color: #646464;
-                    font-family: 'Roboto', sans-serif;
-                    border-radius: 10px;
-                """)
         self.resize(500, 300)
 
         self.layout = QVBoxLayout(self)
 
         self.tabs = QTabWidget()
-        self.tabs.setStyleSheet("""
-                    QTabWidget::pane { border: 0; }
-                    QTabBar::tab {
-                        color: white;
-                        background-color: #2d2d2d;
-                        padding: 5px;
-                        border: 0;
-                        border-radius: 5px;
-                        margin-right: 5px;
-                    }
-                    QTabBar::tab:selected { background-color: #646464; }
-                """)
 
         self.tab1 = QWidget()
         self.tab2 = QWidget()
@@ -87,41 +78,16 @@ class SetupWindow(QWidget):
 
         self.speaker_name_input = QLineEdit()
         self.speaker_name_input.setPlaceholderText("Enter Name Here")
-        self.speaker_name_input.setStyleSheet("""
-                    font-size: 14pt;
-                    color: #ffffff;
-                    background-color: #444444;
-                    border: none;
-                    padding: 5px;
-                    border-radius: 10px;
-                """)
 
         self.start_button = QPushButton("Start Call")
         self.start_button.clicked.connect(self.start_chat)
-        self.start_button.setStyleSheet("""
-                    QPushButton {
-                        font-size: 14pt;
-                        color: #ffffff;
-                        background-color: #444444;
-                        border: none;
-                        padding: 10px;
-                        border-radius: 15px;
-                    }
-                    QPushButton:hover {
-                        background-color: #555555;
-                    }
-                    QPushButton:pressed {
-                        background-color: #333333;
-                    }
-                """)
-
 
         self.file_dropdown = QComboBox()
-        self.file_dropdown.setStyleSheet(self.speaker_name_input.styleSheet())
+
 
         self.load_file_button = QPushButton("Load Selected Call")
         self.load_file_button.clicked.connect(self.load_file)
-        self.load_file_button.setStyleSheet(self.start_button.styleSheet())
+
 
         self.nofiles_label = QLabel()
 
@@ -136,6 +102,9 @@ class SetupWindow(QWidget):
         self.layout.addWidget(self.tabs)
 
         self.load_files_into_dropdown()
+
+        stylesheet = load_stylesheet('styles/setup.qss')
+        self.setStyleSheet(stylesheet)
 
 
     def start_chat(self):
@@ -218,29 +187,10 @@ class ChatApp(QWidget):
     def create_widgets(self):
         self.setWindowTitle("SalesGPT")
         self.setWindowIcon(QIcon("app_icon.png"))
-        self.setStyleSheet("""
-                            background-color: #222222;
-                            color: #ffffff;
-                            selection-background-color: #646464;
-                            font-family: 'Roboto', sans-serif;
-                            border-radius: 10px;
-                        """)
 
         self.resize(800, 600)
 
         self.tab_widget = QTabWidget()
-        self.tab_widget.setStyleSheet("""
-                            QTabWidget::pane { border: 0; }
-                            QTabBar::tab {
-                                color: white;
-                                background-color: #2d2d2d;
-                                padding: 5px;
-                                border: 0;
-                                border-radius: 5px;
-                                margin-right: 5px;
-                            }
-                            QTabBar::tab:selected { background-color: #646464; }
-                        """)
 
 
         #Transcript tab
@@ -248,22 +198,9 @@ class ChatApp(QWidget):
         transcript_tab = QWidget()
 
         self.transcript_box = QTextEdit()
-        self.transcript_box.setStyleSheet("""
-                            background-color: #2d2d2d;  
-                            color: white;
-                            font-family: Ubuntu;
-                            font-size: 15px;
-                            font-weight: bold;
-                        """)
         self.transcript_box.setReadOnly(True)
 
         self.recording_label = QLabel()
-        self.recording_label.setStyleSheet("""
-                            color: white;
-                            font-family: Ubuntu;
-                            font-size: 15px;
-                            font-weight: bold;
-                            """)
         self.recording_label.setText("Recording.")
 
         self.recording_timer = QTimer()
@@ -272,22 +209,6 @@ class ChatApp(QWidget):
 
         self.save_quit_button = QPushButton("Save and quit")
         self.save_quit_button.setFont(QFont("Roboto", 12))
-        self.save_quit_button.setStyleSheet("""
-            QPushButton {
-        font-size: 14pt;
-        color: #ffffff;
-        background-color: #444444;
-        border: none;
-        padding: 10px;
-        border-radius: 15px;
-        }
-        QPushButton:hover {
-            background-color: #555555;
-        }
-        QPushButton:pressed {
-            background-color: #333333;
-        }
-        """)
         self.save_quit_button.clicked.connect(self.save_and_quit)
 
         transcript_layout = QVBoxLayout(transcript_tab)
@@ -303,52 +224,21 @@ class ChatApp(QWidget):
 
         self.chat_history_box = QTextEdit()
         self.chat_history_box.setReadOnly(True)
-        self.chat_history_box.setStyleSheet("""background-color: #2d2d2d""")
 
         self.chat_history_box.append(
-            "<div style='background-color:#242424; padding:10px; margin:15px; border-radius:15px; color:#e9e9e9; font-family:Roboto; font-size:16px;'><b>"
+            HTML_MESSAGE_TEMPLATE
             + "SalesGPT: " + "</b>" + "Hi! I'm your personal sales assistant. I'll advise you during the call. If you have any questions,"
                                      "want advice, or anything else, just send me a message!" + "</div>")
 
         self.input_box = QLineEdit()
         self.input_box.setPlaceholderText("Send a message...")
-        self.input_box.setStyleSheet("""
-                            font-size: 14pt;
-                            color: #ffffff;
-                            background-color: #444444;
-                            border: none;
-                            padding: 5px;
-                            border-radius: 10px;
-                        """)
         self.input_box.setMinimumSize(400, 40)
 
 
         self.send_button = QPushButton("Send message")
-        self.send_button.setStyleSheet("""
-                            QPushButton {
-                                font-size: 14pt;
-                                color: #ffffff;
-                                background-color: #444444;
-                                border: none;
-                                padding: 10px;
-                                border-radius: 15px;
-                            }
-                            QPushButton:hover {
-                                background-color: #555555;
-                            }
-                            QPushButton:pressed {
-                                background-color: #333333;
-                            }
-                        """)
         self.send_button.clicked.connect(self.on_send)
 
         self.response_label = QLabel()
-        self.response_label.setStyleSheet("""
-                                    color: white;
-                                    font-family: Ubuntu;
-                                    font-size: 15px;
-                                    font-weight: bold;
-                                    """)
         self.response_label_text = "Listening"
 
         chat_layout = QVBoxLayout(chat_tab)
@@ -361,6 +251,9 @@ class ChatApp(QWidget):
 
         layout = QVBoxLayout(self)
         layout.addWidget(self.tab_widget)
+
+        stylesheet = load_stylesheet('styles/chatapp.qss')
+        self.setStyleSheet(stylesheet)
 
     @pyqtSlot()
     def update_transcript(self):
@@ -405,7 +298,7 @@ class ChatApp(QWidget):
             self.input_box.clear()
 
             self.chat_history_box.append(
-                "<div style='background-color:#242424 ; padding:10px; margin:15px; border-radius:15px; color:#e9e9e9; font-family:Roboto; font-size:16px;'><b>"
+                HTML_MESSAGE_TEMPLATE
                 + "You: " + "</b>" + user_message + "</div>")
             self.chat_history_box.moveCursor(QTextCursor.End)
 
@@ -429,7 +322,7 @@ class ChatApp(QWidget):
 
         QApplication.processEvents()
         self.chat_history_box.append(
-            "<div style='background-color:#242424 ; padding:10px; margin:15px; border-radius:15px; color:#e9e9e9; font-family:Roboto; font-size:16px;'><b>"
+            HTML_MESSAGE_TEMPLATE
             + "SalesGPT: " + "</b>" + response + "</div>")
         self.chat_history_box.update()
         self.chat_history_box.moveCursor(QTextCursor.End)
@@ -469,7 +362,7 @@ class ChatApp(QWidget):
             if response is not None:
                 self.sent_to_gpt_count = len(self.transcript)
                 self.chat_history_box.append(
-                    "<div style='background-color:#242424 ; padding:10px; margin:15px; border-radius:15px; color:#e9e9e9; font-family:Roboto; font-size:16px;'><b>"
+                    HTML_MESSAGE_TEMPLATE
                     + "SalesGPT: " + "</b>" + response + "</div>")
                 self.chat_history_box.update()
                 self.chat_history_box.moveCursor(QTextCursor.End)
@@ -495,42 +388,16 @@ class ChatWithSavedTranscript(QWidget):
     def create_widgets(self):
         self.setWindowTitle("SalesGPT")
         self.setWindowIcon(QIcon("app_icon.png"))
-        self.setStyleSheet("""
-                                    background-color: #222222;
-                                    color: #ffffff;
-                                    selection-background-color: #646464;
-                                    font-family: 'Roboto', sans-serif;
-                                    border-radius: 10px;
-                                """)
 
         self.resize(800, 600)
 
         self.tab_widget = QTabWidget()
-        self.tab_widget.setStyleSheet("""
-                                    QTabWidget::pane { border: 0; }
-                                    QTabBar::tab {
-                                        color: white;
-                                        background-color: #2d2d2d;
-                                        padding: 5px;
-                                        border: 0;
-                                        border-radius: 5px;
-                                        margin-right: 5px;
-                                    }
-                                    QTabBar::tab:selected { background-color: #646464; }
-                                """)
 
         # Transcript tab
 
         transcript_tab = QWidget()
 
         self.transcript_box = QTextEdit()
-        self.transcript_box.setStyleSheet("""
-                                    background-color: #2d2d2d;  
-                                    color: white;
-                                    font-family: Ubuntu;
-                                    font-size: 15px;
-                                    font-weight: bold;
-                                """)
         self.transcript_box.setReadOnly(True)
         self.transcript_box.setPlainText(self.transcript)
 
@@ -546,51 +413,21 @@ class ChatWithSavedTranscript(QWidget):
 
         self.chat_history_box = QTextEdit()
         self.chat_history_box.setReadOnly(True)
-        self.chat_history_box.setStyleSheet("""background-color: #2d2d2d""")
 
         self.chat_history_box.append(
-            "<div style='background-color:#242424; padding:10px; margin:15px; border-radius:15px; color:#e9e9e9; font-family:Roboto; font-size:16px;'><b>"
+            HTML_MESSAGE_TEMPLATE
             + "SalesGPT: " + "</b>" + "Hi! Ask me any questions you have about the transcript! I can evaluate the salesperson's performance, tell you about the customer, "
                                       "and more." + "</div>")
 
         self.input_box = QLineEdit()
         self.input_box.setPlaceholderText("Send a message...")
-        self.input_box.setStyleSheet("""
-                                    font-size: 14pt;
-                                    color: #ffffff;
-                                    background-color: #444444;
-                                    border: none;
-                                    padding: 5px;
-                                    border-radius: 10px;
-                                """)
+
         self.input_box.setMinimumSize(400, 40)
 
         self.send_button = QPushButton("Send message")
-        self.send_button.setStyleSheet("""
-                                    QPushButton {
-                                        font-size: 14pt;
-                                        color: #ffffff;
-                                        background-color: #444444;
-                                        border: none;
-                                        padding: 10px;
-                                        border-radius: 15px;
-                                    }
-                                    QPushButton:hover {
-                                        background-color: #555555;
-                                    }
-                                    QPushButton:pressed {
-                                        background-color: #333333;
-                                    }
-                                """)
         self.send_button.clicked.connect(self.on_send)
 
         self.response_label = QLabel()
-        self.response_label.setStyleSheet("""
-                                            color: white;
-                                            font-family: Ubuntu;
-                                            font-size: 15px;
-                                            font-weight: bold;
-                                            """)
 
         chat_layout = QVBoxLayout(chat_tab)
         chat_layout.addWidget(self.chat_history_box)
@@ -603,6 +440,9 @@ class ChatWithSavedTranscript(QWidget):
         layout = QVBoxLayout(self)
         layout.addWidget(self.tab_widget)
 
+        stylesheet = load_stylesheet('styles/chatapp.qss')
+        self.setStyleSheet(stylesheet)
+
     @pyqtSlot()
     def on_send(self):
         user_message = self.input_box.text()
@@ -610,7 +450,7 @@ class ChatWithSavedTranscript(QWidget):
             self.input_box.clear()
 
             self.chat_history_box.append(
-                "<div style='background-color:#242424 ; padding:10px; margin:15px; border-radius:15px; color:#e9e9e9; font-family:Roboto; font-size:16px;'><b>"
+                HTML_MESSAGE_TEMPLATE
                 + "You: " + "</b>" + user_message + "</div>")
             self.chat_history_box.moveCursor(QTextCursor.End)
 
@@ -634,7 +474,7 @@ class ChatWithSavedTranscript(QWidget):
         self.response_label.clear()
         QApplication.processEvents()
         self.chat_history_box.append(
-            "<div style='background-color:#242424 ; padding:10px; margin:15px; border-radius:15px; color:#e9e9e9; font-family:Roboto; font-size:16px;'><b>"
+            HTML_MESSAGE_TEMPLATE
             + "SalesGPT: " + "</b>" + response + "</div>")
         self.chat_history_box.update()
         self.chat_history_box.moveCursor(QTextCursor.End)
