@@ -172,12 +172,10 @@ class ChatApp(QWidget):
         self.timer_for_objection_detection = QTimer()
         self.timer_for_objection_detection.timeout.connect(self.objection_detection_thread)
         self.timer_for_objection_detection.start(self.OBJECTION_CHECK_INTERVAL)
-        self.first = False
 
         self.db = loaded_db
 
         self.transcript = None
-        self.first = True
         self.sent_to_gpt_count = 0
         self.create_widgets()
 
