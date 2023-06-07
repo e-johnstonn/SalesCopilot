@@ -1,15 +1,15 @@
 # SalesGPT 🚀💸
 SalesGPT is an AI-powered sales assistant that provides real-time transcription, live chat, automatic unprompted advice, integration with a custom knowledge base, and the ability to save and load past conversations. 
 
-Built with [Deep Lake](https://github.com/activeloopai/deeplake), [LangChain](https://github.com/hwchase17/langchain), and modified versions of [ecoute](https://github.com/SevaSk/ecoute) and [Speech Recognition](https://github.com/Uberi/speech_recognition). All open-source, check them out!
+Built with [**Deep Lake**](https://github.com/activeloopai/deeplake), [**LangChain**](https://github.com/hwchase17/langchain), and modified versions of [**ecoute**](https://github.com/SevaSk/ecoute) and [**Speech Recognition**](https://github.com/Uberi/speech_recognition). All open-source, check them out!
 
 ## Features
 
-- Real-Time Transcription: Transcribes your conversations with in real-time, maintaining a record in the 'Transcript' tab for review and analysis.
-- Live Chat: Ask questions, get advice, and more with a chat bot that reads and understands the live transcript.
-- Unprompted Advice: Potential objections or questions the customer has are detected, and advice on how to respond is offered within seconds.
-- Knowledge Base Integration: Uses [Deep Lake](https://github.com/activeloopai/deeplake) as a vector database to store and retrieve information, allowing your chosen sales guidelines to be queried, with the most relevant being used to give advice.
-- Save and Load Transcripts: Save transcripts, then load them up later and have it summarized, ask for a performance evaluation, and more. 
+- **Real-Time Transcription**: Transcribes your conversations with in real-time, maintaining a record in the 'Transcript' tab for review and analysis.
+- **Live Chat**: Ask questions, get advice, and more with a chat bot that reads and understands the live transcript.
+- **Unprompted Advice**: Potential objections or questions the customer has are detected, and advice on how to respond is offered within seconds.
+- **Knowledge Base Integration**: Uses [Deep Lake](https://github.com/activeloopai/deeplake) as a vector database to store and retrieve information, allowing your chosen sales guidelines to be queried, with the most relevant being used to give advice.
+- **Save and Load Transcripts**: Save transcripts, then load them up later and have it summarized, ask for a performance evaluation, and more. 
 
 ## Demo
 
