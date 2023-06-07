@@ -23,7 +23,7 @@ Audio at ~7 seconds
 ## Setup 🔧 
 - **This branch is intended to be used with macOS only**
 - Ensure you have FFmpeg installed. If you don't, [here's a guide](https://phoenixnap.com/kb/ffmpeg-mac).
-### Install and set up [BlackHole](https://github.com/ExistentialAudio/BlackHole). Configure it as a Multi Output Device - [guide here](https://github.com/ExistentialAudio/BlackHole/wiki/Multi-Output-Device). [Watch this video](https://www.youtube.com/watch?v=sT7YKMTdnX4) for more details. [Alternate video (for use with OBS but setup should be the same](https://www.youtube.com/watch?v=H4VPbMvBuLg)
+### Install and set up [BlackHole](https://github.com/ExistentialAudio/BlackHole). Configure it as a Multi Output Device - [guide here](https://github.com/ExistentialAudio/BlackHole/wiki/Multi-Output-Device). [Watch this video](https://www.youtube.com/watch?v=sT7YKMTdnX4) for more details. [Alternate video (for use with OBS but setup should be the same](https://www.youtube.com/watch?v=H4VPbMvBuLg).
 1. Clone the repository and navigate to the project directory 
   ```
   git clone -b mac_branch https://github.com/e-johnstonn/salesGPT.git
