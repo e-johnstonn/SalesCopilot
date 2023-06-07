@@ -47,8 +47,7 @@ By default, the app uses [this](https://blog.hubspot.com/sales/handling-common-s
 3. I recommend adjusing the ```split_data``` method in `deep_lake_utils.py` to split your document effectively - if it's unstructured use something LangChain's RecursiveCharacterSplitter
 
 ### How the knowledge base works
-
-![example](https://github.com/e-johnstonn/salesGPT/assets/30129211/92ed5ce5-8a45-4f62-88bf-df3d4f4c43c1)
+![diagram](https://github.com/e-johnstonn/salesGPT/assets/30129211/0af5348f-c225-48bb-a054-963df533564b)
 
 ## License
 
