@@ -77,7 +77,7 @@ class DeepLakeLoader:
         """
         with open(self.source_data_path, 'r') as f:
             content = f.read()
-        split_data = re.split(r'(?=\d+\. )', content)
+        split_data = re.split(r'(?=\d+\. )', content) # This is super specific to the default data source! If using a different data source, this will need to be modified.
         if split_data[0] == '':
             split_data.pop(0)
         split_data = [entry for entry in split_data if len(entry) >= 30]
