@@ -28,10 +28,10 @@ Enter a name for the person you're speaking to, click Start, and the app will lo
 When the conversation is finished, you can click "Save and Quit" in the "Transcript" tab to save a copy of the transcript. If you restart the app, you can now load this transcript. Ask SalesGPT to summarize it, evaluate your performance, or any other questions related to the transcript. 
 
 ## Using your own knowledge base
-By default, the app uses [this knowledge base](https://blog.hubspot.com/sales/handling-common-sales-objections), located in the `data` folder. To use your own knowledge base:
+By default, the app uses [this](https://blog.hubspot.com/sales/handling-common-sales-objections) as a knowledge base, located in the `data` folder. To use your own knowledge base:
 1. Put your knowledge base in the `data` folder in the form of a text file
 2. Update the path in `chat_utils.py` to the path of your knowledge base
-3. I recommend adjusing the ```split_data``` method in `deep_lake_utils.py` to split your document effectively
+3. I recommend adjusing the ```split_data``` method in `deep_lake_utils.py` to split your document effectively - if it's unstructured use something LangChain's RecursiveCharacterSplitter
 
 ## License
 
