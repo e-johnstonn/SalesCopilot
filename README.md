@@ -12,8 +12,8 @@ Built with [Deep Lake](https://github.com/activeloopai/deeplake), [LangChain](ht
 - Save and Load Transcripts: Save transcripts, then load them up later and have it summarized, ask for a performance evaluation, and more. 
 
 ## Demo
-
-https://github.com/e-johnstonn/salesGPT/assets/30129211/c5c86bc5-6516-4dcd-bba2-989caaaf563f
+Audio at ~7 seconds
+https://github.com/e-johnstonn/salesGPT/assets/30129211/f32aa712-0f63-43ff-a939-2359ea26db05
 
 ## Setup 🔧 
 - As of now only Windows is supported. A separate branch supporting macOS is coming soon!
