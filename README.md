@@ -46,6 +46,10 @@ By default, the app uses [this](https://blog.hubspot.com/sales/handling-common-s
 2. Update the path in `chat_utils.py` to the path of your knowledge base
 3. I recommend adjusing the ```split_data``` method in `deep_lake_utils.py` to split your document effectively - if it's unstructured use something LangChain's RecursiveCharacterSplitter
 
+### How the knowledge base works
+
+![example](https://github.com/e-johnstonn/salesGPT/assets/30129211/92ed5ce5-8a45-4f62-88bf-df3d4f4c43c1)
+
 ## License
 
 [MIT License](LICENSE)
