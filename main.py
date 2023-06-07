@@ -6,14 +6,14 @@ import threading
 import time
 import os
 
-from PyQt5.QtCore import pyqtSlot, QTimer, QThread
+from PyQt5.QtCore import pyqtSlot, QTimer, QThread, pyqtSignal
 from PyQt5.QtWidgets import QApplication, QWidget, QVBoxLayout, QPushButton, QTextEdit, QLineEdit, QLabel, \
     QTabWidget, QComboBox, QMessageBox, QStyleFactory
 from PyQt5.QtGui import QFont, QTextCursor, QIcon
 
 import AudioRecorder
 from AudioTranscriber import AudioTranscriber
-from chat_utils import GPTChat
+from chat_utils import GPTChat, SavedTranscriptChat
 
 from dotenv import load_dotenv
 
@@ -121,17 +121,12 @@ class SetupWindow(QWidget):
     def load_files_into_dropdown(self):
         txt_files = glob.glob(os.path.join("transcripts", '*.txt'))
 
-
         if txt_files is None:
             self.nofiles_label.setText("No files found!")
             self.nofiles_label.setFont(QFont("Roboto", 16))
             return None
         else:
             self.file_dropdown.addItems(txt_files)
-
-
-
-
 
 
 class WorkerThread(QThread):
@@ -145,14 +140,16 @@ class WorkerThread(QThread):
         self.function(*self.args, **self.kwargs)
 
 
-
 class ChatApp(QWidget):
     TRANSCRIPT_CHECK_INTERVAL = 3000
     RESPONSE_CHECK_INTERVAL = 1000
     OBJECTION_CHECK_INTERVAL = 5000
     FILENAME_TIMESTAMP_FORMAT = "%d-%m-%Y_%H-%M-%S"
+    append_chat_history_signal = pyqtSignal(str)
+
     def __init__(self, speaker_name, loaded_db=None):
         super().__init__()
+        self.append_chat_history_signal.connect(self.append_chat_history)
         self.chat = GPTChat()
         self.chat_for_objection_detection = GPTChat() # This is a separate instance of GPTChat used to avoid weird threading issues - better way to do this?
         self.audio_process = AudioProcess()
@@ -178,7 +175,6 @@ class ChatApp(QWidget):
         self.transcript = None
         self.sent_to_gpt_count = 0
         self.create_widgets()
-
 
     def create_widgets(self):
         self.setWindowTitle("SalesGPT")
@@ -266,7 +262,6 @@ class ChatApp(QWidget):
             scrollbar.setValue(value)
 
     def objection_detection_thread(self):
-        print("Starting sales testing thread")
         self.timer_for_objection_detection.stop()
         self.thread_sales = WorkerThread(self.objection_detection)
         self.thread_sales.finished.connect(self.timer_for_objection_detection.start)
@@ -307,13 +302,9 @@ class ChatApp(QWidget):
         response = self.chat.message_bot(user_message, transcript)
 
         self.response_label_text = "Listening"
-
         QApplication.processEvents()
-        self.chat_history_box.append(
-            HTML_MESSAGE_TEMPLATE
-            + "SalesGPT: " + "</b>" + response + "</div>")
-        self.chat_history_box.update()
-        self.chat_history_box.moveCursor(QTextCursor.End)
+        message = HTML_MESSAGE_TEMPLATE + "SalesGPT: " + "</b>" + response + "</div>"
+        self.append_chat_history_signal.emit(message)
 
     def save_transcript(self):
         try:
@@ -340,7 +331,6 @@ class ChatApp(QWidget):
         except Exception as e:
             print(e)
 
-
     def objection_detection(self):
         recent_transcript = self.transcript[self.sent_to_gpt_count:]
         recent_transcript = recent_transcript[-500:]
@@ -348,31 +338,32 @@ class ChatApp(QWidget):
             response = self.chat_for_objection_detection.generate_response_from_sales_call(recent_transcript)
             if response is not None:
                 self.sent_to_gpt_count = len(self.transcript)
-                self.chat_history_box.append(
-                    HTML_MESSAGE_TEMPLATE
-                    + "SalesGPT: " + "</b>" + response + "</div>")
-                self.chat_history_box.update()
-                self.chat_history_box.moveCursor(QTextCursor.End)
-                self.chat.messages.append(response) # adds the response to the chat history - not sure if this is the best way to do it
+                message = HTML_MESSAGE_TEMPLATE + "SalesGPT: " + "</b>" + response + "</div>"
+                self.append_chat_history_signal.emit(message)
+                self.chat.messages.append(self.chat_for_objection_detection.ai_message) # adds the response to the chat history - not sure if this is the best way to do it
 
-
-
-
+    @pyqtSlot(str)
+    def append_chat_history(self, message):
+        self.chat_history_box.append(message)
+        self.chat_history_box.update()
+        self.chat_history_box.moveCursor(QTextCursor.End)
 
 
 class ChatWithSavedTranscript(QWidget):
+    append_chat_history_signal = pyqtSignal(str)
     def __init__(self, transcript_path):
         super().__init__()
 
-        self.chat = GPTChat(live_chat=False)
+        self.append_chat_history_signal.connect(self.append_chat_history)
         with open(transcript_path, 'r') as f:
             self.transcript = f.read()
 
-
+        self.chat = SavedTranscriptChat(self.transcript)
         self.response_timer = QTimer()
         self.response_timer.timeout.connect(self.update_placeholder)
 
         self.create_widgets()
+
     def create_widgets(self):
         self.setWindowTitle("SalesGPT")
         self.setWindowIcon(QIcon("app_icon.png"))
@@ -442,8 +433,8 @@ class ChatWithSavedTranscript(QWidget):
                 + "You: " + "</b>" + user_message + "</div>")
             self.chat_history_box.moveCursor(QTextCursor.End)
 
-            self.placeholder_text = "."
             self.response_timer.start(500)
+            self.placeholder_text = "."
 
             threading.Thread(target=self.get_response, args=(user_message,)).start()
 
@@ -456,14 +447,18 @@ class ChatWithSavedTranscript(QWidget):
 
     def get_response(self, user_message):
 
-        response = self.chat.query_transcript(user_message, self.transcript)
+        response = self.chat.message_bot(user_message)
 
         self.response_timer.stop()
         self.response_label.clear()
         QApplication.processEvents()
-        self.chat_history_box.append(
-            HTML_MESSAGE_TEMPLATE
-            + "SalesGPT: " + "</b>" + response + "</div>")
+
+        message = HTML_MESSAGE_TEMPLATE + "SalesGPT: " + "</b>" + response + "</div>"
+        self.append_chat_history_signal.emit(message)
+
+    @pyqtSlot(str)
+    def append_chat_history(self, message):
+        self.chat_history_box.append(message)
         self.chat_history_box.update()
         self.chat_history_box.moveCursor(QTextCursor.End)
 
