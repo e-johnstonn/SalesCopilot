@@ -17,7 +17,7 @@ By using Deep Lake as a vector store for our knowledge base, we can quickly and 
 
 First, we take our knowledge base and embed it, storing the embeddings in a Deep Lake vector database. Then, when we detect an objection in the transcript, we embed the objection and use it to search our database, retrieving the most similar guidelines. We then pass those guidelines along with the objection to the LLM and send the result to the user. 
 
-### Implementation
+### Creating, Loading, and Querying Our Database
 We're going to define a class that handles the database creation, database loading, and database querying. 
 
 ```python
@@ -105,7 +105,7 @@ def query_db(self, query):
 
 We don't want the metadata to be passed to the LLM, so we take the results of our similarity search and pull just the content from them. And that's it! We now have our custom knowledge base stored in a Deep Lake vector database and ready to be queried!
 
-### Integrating our database with the chat
+### Connecting Our Database to the LLM
 Now, all we need to do is connect our LLM to the database. First, we need to create a DeepLakeLoader instance with the path to our data.
 ```python
 db = DeepLakeLoader('data/salestesting.txt')
