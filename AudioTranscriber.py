@@ -7,7 +7,7 @@ from tempfile import NamedTemporaryFile
 import custom_speech_recognition as sr
 import io
 from datetime import timedelta
-import pyaudiowpatch as pyaudio
+import pyaudio
 from heapq import merge
 
 from dotenv import load_dotenv
