@@ -3,9 +3,7 @@ SalesGPT is an AI-powered sales assistant that provides real-time transcription,
 
 Built with [**Deep Lake**](https://github.com/activeloopai/deeplake), [**LangChain**](https://github.com/hwchase17/langchain), and modified versions of [**ecoute**](https://github.com/SevaSk/ecoute) and [**Speech Recognition**](https://github.com/Uberi/speech_recognition). All open-source, check them out!
 
-##
-
-This branch is for testing with macOS
+## **This branch is for testing with macOS**
 
 ## Features
 
