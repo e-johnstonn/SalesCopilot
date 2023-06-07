@@ -13,22 +13,20 @@ class GPTChat:
     and generating responses from sales calls.
     """
 
-    def __init__(self, live_chat=True):
+    def __init__(self):
         """
         Initializes a GPTChat instance.
 
-        Parameters:
-            live_chat (bool): Whether the chat is on a live transcript, or a saved one. If true, a Deep Lake DB is created.
         """
         self.messages = []
         self.chat = ChatOpenAI()
         self.response = ""
 
-        if live_chat:
-            self.db = DeepLakeLoader('data/salestesting.txt')
-            self.messages.append(SystemMessage(content=prompts.LIVE_CHAT_PROMPT))
 
-        self.saved_transcript = ""
+        self.db = DeepLakeLoader('data/salestesting.txt')
+        self.messages.append(SystemMessage(content=prompts.LIVE_CHAT_PROMPT))
+
+        self.ai_message = None
 
     def message_bot(self, human_message, transcript):
         """
@@ -47,8 +45,6 @@ class GPTChat:
         temp_messages = self.messages.copy()
         temp_messages.append(human_message_with_transcript)
 
-        print("Messages: ", temp_messages)
-
         self.response = self.chat(temp_messages)
 
         human_message_without_transcript = HumanMessage(content=human_message)
@@ -60,7 +56,6 @@ class GPTChat:
 
 
     def find_objections(self, transcript):
-        print("Finding objections...")
         """
         Detects whether there is an objection in a transcript, and returns the objection if there is one.
 
@@ -87,38 +82,53 @@ class GPTChat:
             str: The response generated from the transcript, or None if no objection was found.
         """
         response = self.find_objections(transcript)
-        print("Response: ", response)
         if response[:2].translate(str.maketrans('', '', string.punctuation)).lower() == 'no':
             return None
         else:
             results = self.db.query_db(response)
             sys_message = SystemMessage(content=prompts.OBJECTION_GUIDELINES_PROMPT)
-            human_message = HumanMessage(content=f'Customer objection: {response}, ||| Relevant guidelines: {results}')
+            human_message = HumanMessage(content=f'Customer objection: {response}, ||| Relevant guidelines: {results} ||| Transcript: {transcript}')
             response = self.chat([sys_message, human_message])
-            ai_message = AIMessage(content=response.content)
-            self.messages.append(ai_message)
+            self.ai_message = AIMessage(content=str(response.content))
             return response.content
 
-    def query_transcript(self, query, transcript):
+
+class SavedTranscriptChat:
+    """
+    A class for chatting with an AI chat model using a saved transcript.
+
+    """
+    def __init__(self, transcript):
         """
-        Answers the user query using the saved transcript.
+        Initializes a SavedTranscriptChat instance.
 
         Parameters:
-            query (str): The user query.
-            transcript (str): The transcript to answer the query with.
+            transcript (str): The transcript to use for the chat.
+        """
+        self.chat = ChatOpenAI()
+        self.messages = []
+        self.transcript = transcript
+        self.messages.append(SystemMessage(content=prompts.SAVED_TRANSCRIPT_PROMPT))
+        self.messages.append(HumanMessage(content=f' Transcript of sales call: {transcript}'))
+
+    def message_bot(self, human_message):
+        """
+        Sends a message to the chatbot, and returns the response.
+
+        Parameters:
+            human_message (str): The message to send to the chatbot.
 
         Returns:
-            str: The response to the query.
+            str: The response from the chatbot.
         """
-        if self.saved_transcript == "":
-            self.saved_transcript = transcript
-            self.messages.append(HumanMessage(content=transcript))
-            self.messages.append(HumanMessage(content=prompts.SAVED_TRANSCRIPT_PROMPT))
-        self.messages.append(HumanMessage(content=query))
+        self.messages.append(HumanMessage(content=human_message))
         response = self.chat(self.messages)
         ai_message = AIMessage(content=response.content)
         self.messages.append(ai_message)
         return response.content
+
+
+
 
 
 
