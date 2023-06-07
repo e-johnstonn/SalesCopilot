@@ -147,7 +147,7 @@ class ChatApp(QWidget):
     FILENAME_TIMESTAMP_FORMAT = "%d-%m-%Y_%H-%M-%S"
     append_chat_history_signal = pyqtSignal(str)
 
-    def __init__(self, speaker_name, loaded_db=None):
+    def __init__(self, speaker_name):
         super().__init__()
         self.append_chat_history_signal.connect(self.append_chat_history)
         self.chat = GPTChat()
@@ -170,7 +170,8 @@ class ChatApp(QWidget):
         self.timer_for_objection_detection.timeout.connect(self.objection_detection_thread)
         self.timer_for_objection_detection.start(self.OBJECTION_CHECK_INTERVAL)
 
-        self.db = loaded_db
+        self.model_dict = {0: 'gpt-3.5-turbo',
+                           1: 'gpt-4'}
 
         self.transcript = None
         self.sent_to_gpt_count = 0
@@ -217,6 +218,10 @@ class ChatApp(QWidget):
         self.chat_history_box = QTextEdit()
         self.chat_history_box.setReadOnly(True)
 
+        self.chat_version_combo = QComboBox()
+        self.chat_version_combo.addItem("Model: GPT-3.5")
+        self.chat_version_combo.addItem("Model: GPT-4 (slower but better quality)")
+
         self.chat_history_box.append(
             HTML_MESSAGE_TEMPLATE
             + "SalesGPT: " + "</b>" + "Hi! I'm your personal sales assistant. I'll advise you during the call. If you have any questions,"
@@ -234,6 +239,7 @@ class ChatApp(QWidget):
         self.response_label_text = "Listening"
 
         chat_layout = QVBoxLayout(chat_tab)
+        chat_layout.addWidget(self.chat_version_combo)
         chat_layout.addWidget(self.chat_history_box)
         chat_layout.addWidget(self.input_box)
         chat_layout.addWidget(self.send_button)
@@ -298,8 +304,9 @@ class ChatApp(QWidget):
         self.response_label.setText(self.response_label_text + self.placeholder_text)
 
     def get_response(self, user_message):
+        model_name = self.model_dict[self.chat_version_combo.currentIndex()]
         transcript = self.global_transcriber.get_transcript(speakername=self.speaker_name)
-        response = self.chat.message_bot(user_message, transcript)
+        response = self.chat.message_bot(user_message, transcript, model_name)
 
         self.response_label_text = "Listening"
         QApplication.processEvents()
@@ -364,6 +371,9 @@ class ChatWithSavedTranscript(QWidget):
 
         self.create_widgets()
 
+        self.model_dict = {0: 'gpt-3.5-turbo',
+                           1: 'gpt-4'}
+
     def create_widgets(self):
         self.setWindowTitle("SalesGPT")
         self.setWindowIcon(QIcon("app_icon.png"))
@@ -390,6 +400,10 @@ class ChatWithSavedTranscript(QWidget):
 
         chat_tab = QWidget()
 
+        self.chat_version_combo = QComboBox()
+        self.chat_version_combo.addItem("Model: GPT-3.5")
+        self.chat_version_combo.addItem("Model: GPT-4 (slower but better quality)")
+
         self.chat_history_box = QTextEdit()
         self.chat_history_box.setReadOnly(True)
 
@@ -409,6 +423,7 @@ class ChatWithSavedTranscript(QWidget):
         self.response_label = QLabel()
 
         chat_layout = QVBoxLayout(chat_tab)
+        chat_layout.addWidget(self.chat_version_combo)
         chat_layout.addWidget(self.chat_history_box)
         chat_layout.addWidget(self.input_box)
         chat_layout.addWidget(self.send_button)
@@ -446,8 +461,9 @@ class ChatWithSavedTranscript(QWidget):
         self.response_label.setText("Generating response" + self.placeholder_text)
 
     def get_response(self, user_message):
+        model_name = self.model_dict[self.chat_version_combo.currentIndex()]
 
-        response = self.chat.message_bot(user_message)
+        response = self.chat.message_bot(user_message, model_name)
 
         self.response_timer.stop()
         self.response_label.clear()

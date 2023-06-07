@@ -28,7 +28,7 @@ class GPTChat:
 
         self.ai_message = None
 
-    def message_bot(self, human_message, transcript):
+    def message_bot(self, human_message, transcript, model):
         """
         Sends a message to the chatbot, and returns the response.
 
@@ -44,7 +44,7 @@ class GPTChat:
 
         temp_messages = self.messages.copy()
         temp_messages.append(human_message_with_transcript)
-
+        self.chat.model_name = model
         self.response = self.chat(temp_messages)
 
         human_message_without_transcript = HumanMessage(content=human_message)
@@ -111,17 +111,21 @@ class SavedTranscriptChat:
         self.messages.append(SystemMessage(content=prompts.SAVED_TRANSCRIPT_PROMPT))
         self.messages.append(HumanMessage(content=f' Transcript of sales call: {transcript}'))
 
-    def message_bot(self, human_message):
+    def message_bot(self, human_message, model):
         """
         Sends a message to the chatbot, and returns the response.
 
         Parameters:
             human_message (str): The message to send to the chatbot.
 
+        Parameters:
+            model (str): The model to use for the chatbot (3.5-turbo or 4)
+
         Returns:
             str: The response from the chatbot.
         """
         self.messages.append(HumanMessage(content=human_message))
+        self.chat.model_name = model
         response = self.chat(self.messages)
         ai_message = AIMessage(content=response.content)
         self.messages.append(ai_message)

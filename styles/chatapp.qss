@@ -64,3 +64,16 @@ QLabel {
     font-size: 15px;
 }
 
+QComboBox {
+    background-color: #333333;
+    color: #ffffff;
+    border: 1px solid #555555;
+    padding: 5px;
+}
+
+QComboBox QAbstractItemView {
+    color: #ffffff;
+    background: #404040;
+}
+
+
