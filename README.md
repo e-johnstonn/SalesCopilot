@@ -5,7 +5,7 @@ Built with [Deep Lake](https://github.com/activeloopai/deeplake), [LangChain](ht
 
 ## Demo
 
-https://github.com/e-johnstonn/salesGPT/assets/30129211/c6d897d0-d880-418e-af1a-b59b215711b1
+https://github.com/e-johnstonn/salesGPT/assets/30129211/c5c86bc5-6516-4dcd-bba2-989caaaf563f
 
 ## Setup 🔧 
 - As of now only Windows is supported. A separate branch supporting macOS is coming soon!
