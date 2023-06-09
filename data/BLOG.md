@@ -11,11 +11,11 @@ Additionally, SalesGPT is able to detect potential objections from the customer 
 
 ## Integrating SalesGPT with Deep Lake
 
-By using Deep Lake as a vector store for our knowledge base, we can quickly and easily retrieve only the most relevant info to provide to the LLM. The knowledge base we're using here is [this list of common customer objections](https://blog.hubspot.com/sales/handling-common-sales-objections). Before we get into the code, here's a rough overview of how it works:
+By using Deep Lake as a vector database for our knowledge base, we can quickly and easily retrieve only the most relevant info to provide to the LLM. The knowledge base we're using here is [this list of common customer objections](https://blog.hubspot.com/sales/handling-common-sales-objections). Before we get into the code, here's a rough overview of how it works:
 
 ![enter image description here](https://i.imgur.com/enyKesB.png)
 
-First, we take our knowledge base and embed it, storing the embeddings in a Deep Lake vector database. Then, when we detect an objection in the transcript, we embed the objection and use it to search our database, retrieving the most similar guidelines. We then pass those guidelines along with the objection to the LLM and send the result to the user. 
+First, we take our knowledge base and embed it, storing the embeddings in a Deep Lake vector database. Then, when we detect an objection in the transcript, we embed the objection and use it to search our database, retrieving the most similar excerpts from the knowledgeb base. We then pass those excerpts along with the objection to the LLM, get a response, and send the result to the user. 
 
 ### Creating, Loading, and Querying Our Database
 We're going to define a class that handles the database creation, database loading, and database querying. 
