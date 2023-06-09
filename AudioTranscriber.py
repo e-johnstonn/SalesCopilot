@@ -9,7 +9,6 @@ import io
 from datetime import timedelta
 import pyaudiowpatch as pyaudio
 from heapq import merge
-
 from dotenv import load_dotenv
 import openai
 

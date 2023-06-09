@@ -14,7 +14,6 @@ Your task is to read the transcript and discern whether the customer is raising 
 If the customer is simply stating their thoughts, preferences, or facts that are not specifically connected to the product or service, it is not an objection. 
 Quote only from the transcript.
 Do not add, infer, or interpret anything.
-
 Example:
 '''
 Customer: I'm not sure if I can afford this. It's a bit expensive. The sky is blue. I like the color blue. 

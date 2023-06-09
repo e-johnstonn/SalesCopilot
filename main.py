@@ -10,12 +10,13 @@ from PyQt5.QtCore import pyqtSlot, QTimer, QThread, pyqtSignal
 from PyQt5.QtWidgets import QApplication, QWidget, QVBoxLayout, QPushButton, QTextEdit, QLineEdit, QLabel, \
     QTabWidget, QComboBox, QMessageBox, QStyleFactory
 from PyQt5.QtGui import QFont, QTextCursor, QIcon
+from dotenv import load_dotenv
+
 
 import AudioRecorder
 from AudioTranscriber import AudioTranscriber
 from chat_utils import GPTChat, SavedTranscriptChat
 
-from dotenv import load_dotenv
 
 load_dotenv('keys.env')
 
