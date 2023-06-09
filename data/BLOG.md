@@ -4,7 +4,7 @@ Discover how Deep Lake can be used to supercharge an AI sales assistant, SalesGP
 
 [SalesGPT](https://github.com/e-johnstonn/salesGPT)  is a sales call assistant that transcribes audio in real-time and connects the user to a chatbot with full knowledge of the transcript, powered by GPT-3.5 or GPT-4. This live chat allows for highly relevant assistance to be provided within seconds upon the user's request. 
 
-Additionally, SalesGPT is able to detect potential objections from the customer (e.g. "It's too expensive" or "The product doesn't work for us") and provide well-informed recommendations to the salesperson on how best to handle them. Relying solely on the LLM to come up with these recommendations has some flaws - ChatGPT isn't fine tuned to be a great salesperson, and it may give recommendations that don't align with your personal approach. Integrating it with Deep Lake and a custom knowledge base is the perfect solution - let's dive into how it works!
+Additionally, SalesGPT is able to detect potential objections from the customer (e.g. "It's too expensive" or "The product doesn't work for us") and provide well-informed recommendations to the salesperson on how best to handle them. Relying solely on the LLM to come up with these recommendations has some flaws - ChatGPT isn't fine tuned to be a great salesperson, and it may give recommendations that don't align with your personal approach. Integrating it with Deep Lake and a custom knowledge base is the perfect solution, giving the LLM access to a database of domain-specific information - let's dive into how it works!
 
 ![enter image description here](https://i.imgur.com/XTYSIWN.png)
 
