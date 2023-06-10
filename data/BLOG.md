@@ -6,7 +6,7 @@ Discover how Deep Lake can be used to supercharge an AI sales assistant, SalesCo
 
 Additionally, SalesCopilot is able to detect potential objections from the customer (e.g. "It's too expensive" or "The product doesn't work for us") and provide well-informed recommendations to the salesperson on how best to handle them. Relying solely on the LLM to come up with these recommendations has some flaws - ChatGPT isn't fine tuned to be a great salesperson, and it may give recommendations that don't align with your personal approach. Integrating it with Deep Lake and a custom knowledge base is the perfect solution - let's dive into how it works!
 
-![enter image description here](https://i.imgur.com/XTYSIWN.png)
+![salescopilot](https://github.com/e-johnstonn/SalesCopilot/assets/30129211/be4236d6-8429-4cc1-b256-e7c2cfce2f23)
 
 ## What Did and Didn't Work
 
