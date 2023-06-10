@@ -14,7 +14,7 @@ class GPTChat:
     and generating responses from sales calls.
     """
 
-    def __init__(self):
+    def __init__(self, need_db=False):
         """
         Initializes a GPTChat instance.
 
@@ -23,8 +23,9 @@ class GPTChat:
         self.chat = ChatOpenAI()
         self.response = ""
 
+        if need_db:
+            self.db = DeepLakeLoader('data/salestesting.txt')
 
-        self.db = DeepLakeLoader('data/salestesting.txt')
         self.messages.append(SystemMessage(content=prompts.LIVE_CHAT_PROMPT))
 
         self.ai_message = None
