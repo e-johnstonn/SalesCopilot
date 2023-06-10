@@ -11,15 +11,10 @@ Built with [**Deep Lake**](https://github.com/activeloopai/deeplake), [**LangCha
 - **Knowledge Base Integration**: Uses  Deep Lake as a vector database to store and retrieve information, allowing your chosen sales guidelines to be queried, with the most relevant being used to give advice.
 - **Save and Load Transcripts**: Save transcripts, then load them up later and have it summarized, ask for a performance evaluation, and more. 
 
-## Demo
+## Demo (sound on)
 
+https://github.com/e-johnstonn/SalesCopilot/assets/30129211/3fdb6770-8cab-43a2-ac7e-0d3e561c8659
 
-https://github.com/e-johnstonn/SalesCopilot/assets/30129211/38a5c720-4c9a-4722-ac59-c4e50ce3cc71
-
-
-
-
-Audio at ~7 seconds
 ## Setup 🔧 
 - As of now only Windows is supported. A separate branch supporting macOS is coming soon!
 - Ensure you have FFmpeg installed. If you don't, [here's a guide](https://phoenixnap.com/kb/ffmpeg-windows).
