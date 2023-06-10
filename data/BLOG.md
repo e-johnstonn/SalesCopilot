@@ -1,15 +1,15 @@
 # Supercharging An AI Sales Assistant with Deep Lake
-Discover how Deep Lake can be used to supercharge an AI sales assistant, SalesGPT. In this post, we'll dive into the integration of a custom knowledge base with SalesGPT, making it a more robust tool for handling customer objections. 
-## What is SalesGPT?
+Discover how Deep Lake can be used to supercharge an AI sales assistant, SalesCopilot. In this post, we'll dive into the integration of a custom knowledge base with SalesCopilot, making it a more robust tool for handling customer objections. 
+## What is SalesCopilot?
 
-[SalesGPT](https://github.com/e-johnstonn/salesGPT)  is a sales call assistant that transcribes audio in real-time and connects the user to a chatbot with full knowledge of the transcript, powered by GPT-3.5 or GPT-4. This live chat allows for highly relevant assistance to be provided within seconds upon the user's request. 
+[SalesCopilot](https://github.com/e-johnstonn/SalesCopilot)  is a sales call assistant that transcribes audio in real-time and connects the user to a chatbot with full knowledge of the transcript, powered by GPT-3.5 or GPT-4. This live chat allows for highly relevant assistance to be provided within seconds upon the user's request. 
 
-Additionally, SalesGPT is able to detect potential objections from the customer (e.g. "It's too expensive" or "The product doesn't work for us") and provide well-informed recommendations to the salesperson on how best to handle them. Relying solely on the LLM to come up with these recommendations has some flaws - ChatGPT isn't fine tuned to be a great salesperson, and it may give recommendations that don't align with your personal approach. Integrating it with Deep Lake and a custom knowledge base is the perfect solution - let's dive into how it works!
+Additionally, SalesCopilot is able to detect potential objections from the customer (e.g. "It's too expensive" or "The product doesn't work for us") and provide well-informed recommendations to the salesperson on how best to handle them. Relying solely on the LLM to come up with these recommendations has some flaws - ChatGPT isn't fine tuned to be a great salesperson, and it may give recommendations that don't align with your personal approach. Integrating it with Deep Lake and a custom knowledge base is the perfect solution - let's dive into how it works!
 
 ![enter image description here](https://i.imgur.com/XTYSIWN.png)
 
 
-## Integrating SalesGPT with Deep Lake
+## Integrating SalesCopilot with Deep Lake
 
 By using Deep Lake as a vector store for our knowledge base, we can quickly and easily retrieve only the most relevant info to provide to the LLM. The knowledge base we're using here is [this list of common customer objections](https://blog.hubspot.com/sales/handling-common-sales-objections). Before we get into the code, here's a rough overview of how it works:
 
@@ -115,7 +115,7 @@ Next, we take the detected objection and use it to query the database:
 ```python
 results = db.query_db(detected_objection)
 ```
-To have our LLM generate a message based off these results and the objection, we use [LangChain](https://github.com/hwchase17/langchain). In this example, we use a placeholder for the prompt - if you want to check out the prompts used in SalesGPT, check out the [prompts.py file](https://github.com/e-johnstonn/salesGPT/blob/master/prompts.py).
+To have our LLM generate a message based off these results and the objection, we use [LangChain](https://github.com/hwchase17/langchain). In this example, we use a placeholder for the prompt - if you want to check out the prompts used in SalesCopilot, check out the [prompts.py file](https://github.com/e-johnstonn/SalesCopilot/blob/master/prompts.py).
 ```python
 from langchain.chat_models import ChatOpenAI
 from langchain.schema import SystemMessage, HumanMessage, AIMessage
@@ -133,12 +133,12 @@ print(response.content)
 
 And we're done! In just a few lines of code, we've got our response from the LLM, informed by our own custom knowledge base.
 
-If you want to check out the full code for SalesGPT, [click here](https://github.com/e-johnstonn/salesGPT) to visit the GitHub repo.
+If you want to check out the full code for SalesCopilot, [click here](https://github.com/e-johnstonn/SalesCopilot) to visit the GitHub repo.
 
 ##  The Power of Deep Lake - Leveraging Custom Knowledge Bases
 
-Integrating SalesGPT with Deep Lake allows for a significant enhancement of its capabilities, with immediate and relevant responses based on a custom knowledge base. The beauty of this solution is its adaptability. You can curate your knowledge base according to your own unique sales techniques and customer scenarios, ensuring SalesGPT's responses are perfectly suited for your situation. 
+Integrating SalesCopilot with Deep Lake allows for a significant enhancement of its capabilities, with immediate and relevant responses based on a custom knowledge base. The beauty of this solution is its adaptability. You can curate your knowledge base according to your own unique sales techniques and customer scenarios, ensuring SalesCopilot's responses are perfectly suited for your situation. 
 
 An efficient vector storage solution is essential to working with large knowledge bases and connecting them to LLM's, allowing the LLM to offer knowledgeable, situation-specific advice. On top of that, Deep Lake's persistent storage means we only create the database once, which saves computational resources and time. 
 
-In conclusion, the integration of SalesGPT with Deep Lake creates a powerful tool that combines the speed and intelligence of LLM's with the rapid, precise information retrieval of a vector database. This hybrid system offers a highly adaptable, efficient, and effective solution to handling customer objections. The efficiency and simplicity Deep Lake brings to applications like this alongside its seamless integration make it a top choice for vector storage solutions.
+In conclusion, the integration of SalesCopilot with Deep Lake creates a powerful tool that combines the speed and intelligence of LLM's with the rapid, precise information retrieval of a vector database. This hybrid system offers a highly adaptable, efficient, and effective solution to handling customer objections. The efficiency and simplicity Deep Lake brings to applications like this alongside its seamless integration make it a top choice for vector storage solutions.

@@ -52,7 +52,7 @@ class SetupWindow(QWidget):
     def __init__(self):
         super().__init__()
 
-        self.setWindowTitle("SalesGPT Setup")
+        self.setWindowTitle("SalesCopilot Setup")
         self.setWindowIcon(
             QIcon('app_icon.png'))  # Set the app icon, ensure the file 'app_icon.png' is in your directory
         self.resize(500, 200)
@@ -152,7 +152,7 @@ class ChatApp(QWidget):
         super().__init__()
         self.append_chat_history_signal.connect(self.append_chat_history)
         self.chat = GPTChat()
-        self.chat_for_objection_detection = GPTChat() # This is a separate instance of GPTChat used to avoid weird threading issues - better way to do this?
+        self.chat_for_objection_detection = GPTChat(need_db=True) # This is a separate instance of GPTChat used to avoid weird threading issues - better way to do this?
         self.audio_process = AudioProcess()
         self.global_transcriber = self.audio_process.global_transcriber
 
@@ -179,7 +179,7 @@ class ChatApp(QWidget):
         self.create_widgets()
 
     def create_widgets(self):
-        self.setWindowTitle("SalesGPT")
+        self.setWindowTitle("SalesCopilot")
         self.setWindowIcon(QIcon("app_icon.png"))
 
         self.resize(800, 600)
@@ -225,7 +225,7 @@ class ChatApp(QWidget):
 
         self.chat_history_box.append(
             HTML_MESSAGE_TEMPLATE
-            + "SalesGPT: " + "</b>" + "Hi! I'm your personal sales assistant. I'll advise you during the call. If you have any questions,"
+            + "SalesCopilot: " + "</b>" + "Hi! I'm your personal sales assistant. I'll advise you during the call. If you have any questions,"
                                      "want advice, or anything else, just send me a message!" + "</div>")
 
         self.input_box = QLineEdit()
@@ -311,7 +311,7 @@ class ChatApp(QWidget):
 
         self.response_label_text = "Listening"
         QApplication.processEvents()
-        message = HTML_MESSAGE_TEMPLATE + "SalesGPT: " + "</b>" + response + "</div>"
+        message = HTML_MESSAGE_TEMPLATE + "SalesCopilot: " + "</b>" + response + "</div>"
         self.append_chat_history_signal.emit(message)
 
     def save_transcript(self):
@@ -346,7 +346,7 @@ class ChatApp(QWidget):
             response = self.chat_for_objection_detection.generate_response_from_sales_call(recent_transcript)
             if response is not None:
                 self.sent_to_gpt_count = len(self.transcript)
-                message = HTML_MESSAGE_TEMPLATE + "SalesGPT: " + "</b>" + response + "</div>"
+                message = HTML_MESSAGE_TEMPLATE + "SalesCopilot: " + "</b>" + response + "</div>"
                 self.append_chat_history_signal.emit(message)
                 self.chat.messages.append(self.chat_for_objection_detection.ai_message) # adds the response to the chat history - not sure if this is the best way to do it
 
@@ -376,7 +376,7 @@ class ChatWithSavedTranscript(QWidget):
                            1: 'gpt-4'}
 
     def create_widgets(self):
-        self.setWindowTitle("SalesGPT")
+        self.setWindowTitle("SalesCopilot")
         self.setWindowIcon(QIcon("app_icon.png"))
 
         self.resize(800, 600)
@@ -410,7 +410,7 @@ class ChatWithSavedTranscript(QWidget):
 
         self.chat_history_box.append(
             HTML_MESSAGE_TEMPLATE
-            + "SalesGPT: " + "</b>" + "Hi! Ask me any questions you have about the transcript! I can evaluate the salesperson's performance, tell you about the customer, "
+            + "SalesCopilot: " + "</b>" + "Hi! Ask me any questions you have about the transcript! I can evaluate the salesperson's performance, tell you about the customer, "
                                       "and more." + "</div>")
 
         self.input_box = QLineEdit()
@@ -470,7 +470,7 @@ class ChatWithSavedTranscript(QWidget):
         self.response_label.clear()
         QApplication.processEvents()
 
-        message = HTML_MESSAGE_TEMPLATE + "SalesGPT: " + "</b>" + response + "</div>"
+        message = HTML_MESSAGE_TEMPLATE + "SalesCopilot: " + "</b>" + response + "</div>"
         self.append_chat_history_signal.emit(message)
 
     @pyqtSlot(str)
