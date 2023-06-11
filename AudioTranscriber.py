@@ -98,9 +98,30 @@ class AudioTranscriber:
                 os.rename(file_path, f'{file_path}.wav')
                 audio_file = open(f'{file_path}.wav', "rb")
                 result = openai.Audio.transcribe('whisper-1', file= audio_file, language="en")
+            except openai.error.AuthenticationError:
+                print('Authentication error - invalid or expired API key.')
+                return ''
+            except openai.error.InvalidRequestError:
+                print('Invalid request. Request was malformed or missing parameters.')
+                return ''
+            except openai.error.APIConnectionError:
+                print('API connection error. Check network settings, config.')
+                return ''
+            except openai.error.APIError:
+                print('API error. Probably OpenAI at fault.')
+                return ''
+            except openai.error.Timeout:
+                print('API timeout error.')
+                return ''
+            except openai.error.PermissionError:
+                print('Permission error. Check API key permissions.')
+                return ''
+            except openai.error.RateLimitError:
+                print('Rate limit error. Check rate limits on your OpenAI account.')
+                return ''
             except Exception as e:
-                print('Transcription failed.')
-                print(f'Error: {e}')
+                print('Unknown error.')
+                print(e)
                 return ''
 
         else:
