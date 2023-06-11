@@ -100,6 +100,7 @@ class AudioTranscriber:
                 result = openai.Audio.transcribe('whisper-1', file= audio_file, language="en")
             except Exception as e:
                 print('Transcription failed.')
+                print(f'Error: {e}')
                 return ''
 
         else:
