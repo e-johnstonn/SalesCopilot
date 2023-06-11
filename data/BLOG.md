@@ -6,12 +6,80 @@ Discover how Deep Lake can be used to supercharge an AI sales assistant, SalesCo
 
 Additionally, SalesCopilot is able to detect potential objections from the customer (e.g. "It's too expensive" or "The product doesn't work for us") and provide well-informed recommendations to the salesperson on how best to handle them. Relying solely on the LLM to come up with these recommendations has some flaws - ChatGPT isn't fine tuned to be a great salesperson, and it may give recommendations that don't align with your personal approach. Integrating it with Deep Lake and a custom knowledge base is the perfect solution - let's dive into how it works!
 
-![enter image description here](https://i.imgur.com/XTYSIWN.png)
+![salescopilot](https://github.com/e-johnstonn/SalesCopilot/assets/30129211/be4236d6-8429-4cc1-b256-e7c2cfce2f23)
+
+## What Did and Didn't Work
+
+Before we look at the exact solution we eventually decided on, let's take a glance at the approaches that didn't work, and what we learned from them:
+
+### Didn't Work: No Custom Knowledge Base
+
+This was the first solution we tried - instead of using a custom knowledge base, we could completely rely on the LLM. 
+
+Unfortunately, we ran into some issues:
+- **GPT-4 is awesome, but way too slow**: To get the highest quality responses without a custom knowledge base, using GPT-4 is the best choice. However, the time it takes for the API to return a response mean that by the time the user gets the advice they need, it's too late. This means we have to use GPT-3.5, which comes with a noticeable drop in quality.
+- **Response quality is inconsistent**: Relying solely on the LLM, sometimes we get great responses that are exactly what we're looking for. However, without any additional info, guidelines, or domain-specific information, we also get bad responses that aren't very on-topic. 
+- **Cramming information into the prompt is not token-efficient**: Using the OpenAI API, cost is a consideration, as you pay for the amount of tokens in your prompt + the completion. To ground the LLM and keep the responses high-quality, we could fill the prompt with tons of relevant information, how we'd like it to respond in different situations, etc. This solution isn't ideal, because it means every time we query the LLM we have to pass all that information, and all those tokens, to the API. The costs can add up, and GPT-3.5 can get confused if you give it too much info at once.
+
+That didn't work - the main issue is that we need a way to efficiently ground the LLM's response. The next thing we tried was to use a custom knowledge base combined with a vector database to pass the LLM relevant info for each individual customer objection.
+
+### Didn't Work: Naively Splitting the Custom Knowledge Base 
+To leverage our custom knowledge base, our initial approach was to split the knowledge base into chunks of equal length using LangChain's built-in text splitters. Then we took the detected customer objection, embedded it, and searched the database for those chuhnks that were most relevant. This allowed us to pass relevant excerpts from our knowledge base to the LLM every time we wanted a response, which improved the quality of the responses and made the prompts to the LLM shorter and more efficient. However, our "naive" approach to splitting the custom knowledge base had a major flaw.
+
+To illustrate the issue we faced, let's look at an example. Say we have the following text:
+
+```
+Objection: "There's no money."
+It could be that your prospect's business simply isn't big enough or generating enough cash right now to afford a product like yours. Track their growth and see how you can help your prospect get to a place where your offering would fit into their business.
+
+Objection: "We don't have any budget left this year."
+A variation of the "no money" objection, what your prospect's telling you here is that they're having cash flow issues. But if there's a pressing problem, it needs to get solved eventually. Either help your prospect secure a budget from executives to buy now or arrange a follow-up call for when they expect funding to return.
+
+Objection: "We need to use that budget somewhere else."
+Prospects sometimes try to earmark resources for other uses. It's your job to make your product/service a priority that deserves budget allocation now. Share case studies of similar companies that have saved money, increased efficiency, or had a massive ROI with you.
+```
+
+If we naively split this text, we might end up with individual sections that look like this:
+
+```
+A variation of the "no money" objection, what your prospect's telling you here is that they're having cash flow issues. But if there's a pressing problem, it needs to get solved eventually. Either help your prospect secure a budget from executives to buy now or arrange a follow-up call for when they expect funding to return.
+
+Objection: "We need to use that budget somewhere else."
+```
+
+Here, we see that the advice does not match the objection. When we try to retrieve the most relevant chunk for the objection "We need to use that budget somewhere else", this will likely be our top result, which isn't what we want. When we pass it to the LLM, it might be confusing.
+
+What we really need to do is split the text in a more sophisticated way, that maintains semantic boundaries between each chunk. This will improve retrieval performance and keep the LLM responses higher quality.
+
+
+### Did Work: Intelligent Splitting 
+In our example text, there is a set structure to each individual objection and its recommended response. Rather than split the text based on size, why don't we split the text based on its structure? We want each chunk to begin with the objection, and end before the "Objection" of the next chunk. Here's how we could do it:
+
+```python
+text = """
+Objection: "There's no money."
+It could be that your prospect's business simply isn't big enough or generating enough cash right now to afford a product like yours. Track their growth and see how you can help your prospect get to a place where your offering would fit into their business.
+
+Objection: "We don't have any budget left this year."
+A variation of the "no money" objection, what your prospect's telling you here is that they're having cash flow issues. But if there's a pressing problem, it needs to get solved eventually. Either help your prospect secure a budget from executives to buy now or arrange a follow-up call for when they expect funding to return.
+
+Objection: "We need to use that budget somewhere else."
+Prospects sometimes try to earmark resources for other uses. It's your job to make your product/service a priority that deserves budget allocation now. Share case studies of similar companies that have saved money, increased efficiency, or had a massive ROI with you.
+"""
+
+# Split the text into a list using the keyword "Objection: "
+objections_list = text.split("Objection: ")[1:]  # We ignore the first split as it is empty
+
+# Now, prepend "Objection: " to each item as splitting removed it
+objections_list = ["Objection: " + objection for objection in objections_list]
+```
+
+This gave us the best results. Nailing the way we split and embed our knowledge base means more relevant documents are retrieved and the LLM gets the best possible context to generate a response from. Now let's see how we integrated this solution with Deep Lake and SalesCopilot!
 
 
 ## Integrating SalesCopilot with Deep Lake
 
-By using Deep Lake as a vector store for our knowledge base, we can quickly and easily retrieve only the most relevant info to provide to the LLM. The knowledge base we're using here is [this list of common customer objections](https://blog.hubspot.com/sales/handling-common-sales-objections). Before we get into the code, here's a rough overview of how it works:
+By using Deep Lake as a vector database, we can quickly and easily retrieve only the most relevant info to provide to the LLM. We can also persist the vector database, so we don't have to re-create it every time we load the app. The knowledge base we're using here is [this list of common customer objections](https://blog.hubspot.com/sales/handling-common-sales-objections). Before we get into the code, here's a rough overview of how it works:
 
 ![enter image description here](https://i.imgur.com/enyKesB.png)
 
@@ -56,7 +124,7 @@ def split_data(self):
 	split_data = [entry for entry in split_data if len(entry) >= 30]  
 	return split_data
 ```
-Since we know the structure of our knowledge base, we use this method to split it into individual entries, each representing an example of a customer objection. When we run our similarity search using the detected customer objection, this will improve the results.
+Since we know the structure of our knowledge base, we use this method to split it into individual entries, each representing an example of a customer objection. When we run our similarity search using the detected customer objection, this will improve the results, as outlined above.
 
 After preprocessing the data, we check if we've already created a database for this data. One of the great things about Deep Lake is that it provides us with persistent storage, so we only need to create the database once. If you restart the app, the database doesn't disappear!
 
