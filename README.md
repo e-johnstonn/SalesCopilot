@@ -39,7 +39,7 @@ When the conversation is finished, you can click "Save and Quit" in the "Transcr
 By default, the app uses [this](https://blog.hubspot.com/sales/handling-common-sales-objections) as a knowledge base, located in the `data` folder. To use your own knowledge base:
 1. Put your knowledge base in the `data` folder in the form of a text file
 2. Update the path in `chat_utils.py` to the path of your knowledge base
-3. I recommend adjusing the ```split_data``` method in `deep_lake_utils.py` to split your document effectively - if it's unstructured use something LangChain's RecursiveCharacterSplitter
+3. I recommend adjusting the ```split_data``` method in `deep_lake_utils.py` to split your document effectively - if it's unstructured use something LangChain's RecursiveCharacterSplitter
 
 ### How the knowledge base works
 ![diagram](https://github.com/e-johnstonn/SalesCopilot/assets/30129211/0af5348f-c225-48bb-a054-963df533564b)
