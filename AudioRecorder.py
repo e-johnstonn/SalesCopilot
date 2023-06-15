@@ -36,12 +36,13 @@ class DefaultMicRecorder(BaseRecorder):
 class DefaultSpeakerRecorder(BaseRecorder):
     def __init__(self):
         default_speakers = None
-        with pyaudio.PyAudio() as p:
-            for i in range(p.get_device_count()):
-                device_info = p.get_device_info_by_index(i)
-                if 'blackhole' in device_info['name'].lower():
-                    default_speakers = device_info
-                    break
+        p = pyaudio.PyAudio()
+        for i in range(p.get_device_count()):
+            device_info = p.get_device_info_by_index(i)
+            if 'blackhole' in device_info['name'].lower():
+                default_speakers = device_info
+                break
+        p.close()
         if default_speakers is None:
             raise Exception("Could not find Blackhole Speakers")
 
