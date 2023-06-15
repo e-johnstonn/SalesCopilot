@@ -42,7 +42,7 @@ class DefaultSpeakerRecorder(BaseRecorder):
             if 'blackhole' in device_info['name'].lower():
                 default_speakers = device_info
                 break
-        p.close()
+        p.terminate()
         if default_speakers is None:
             raise Exception("Could not find Blackhole Speakers")
 
