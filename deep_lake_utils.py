@@ -1,8 +1,12 @@
 import os
 import re
-from langchain.embeddings import OpenAIEmbeddings
+from langchain.embeddings import CohereEmbeddings
 from langchain.vectorstores import DeepLake
+from dotenv import load_dotenv
 
+load_dotenv('keys.env')
+
+COHERE_API_KEY = os.getenv('COHERE_API_KEY')
 
 class DeepLakeLoader:
     def __init__(self, source_data_path):
@@ -37,7 +41,7 @@ class DeepLakeLoader:
         Returns:
             DeepLake: DeepLake object.
         """
-        return DeepLake(dataset_path=f'deeplake/{self.file_name}', embedding_function=OpenAIEmbeddings(), read_only=True)
+        return DeepLake(dataset_path=f'deeplake/{self.file_name}', embedding_function=CohereEmbeddings(cohere_api_key=COHERE_API_KEY), read_only=True)
 
     def create_db(self):
         """
@@ -48,7 +52,7 @@ class DeepLakeLoader:
         Returns:
             DeepLake: DeepLake object.
         """
-        return DeepLake.from_texts(self.data, OpenAIEmbeddings(), dataset_path=f'deeplake/{self.file_name}')
+        return DeepLake.from_texts(self.data, CohereEmbeddings(cohere_api_key=COHERE_API_KEY), dataset_path=f'deeplake/{self.file_name}')
 
     def query_db(self, query):
         """
@@ -82,7 +86,6 @@ class DeepLakeLoader:
             split_data.pop(0)
         split_data = [entry for entry in split_data if len(entry) >= 30]
         return split_data
-
 
 
 

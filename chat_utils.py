@@ -1,11 +1,17 @@
+import os
 import string
 
-from langchain.chat_models import ChatOpenAI
-from langchain.schema import SystemMessage, HumanMessage, AIMessage
+from langchain.llms import Cohere
 
 from deep_lake_utils import DeepLakeLoader
 
 import prompts
+
+from dotenv import load_dotenv
+
+load_dotenv('keys.env')
+
+COHERE_API_KEY = os.getenv('COHERE_API_KEY')
 
 
 class GPTChat:
@@ -20,17 +26,17 @@ class GPTChat:
 
         """
         self.messages = []
-        self.chat = ChatOpenAI()
+        self.chat_cohere = Cohere(cohere_api_key=COHERE_API_KEY)
         self.response = ""
 
         if need_db:
             self.db = DeepLakeLoader('data/salestesting.txt')
 
-        self.messages.append(SystemMessage(content=prompts.LIVE_CHAT_PROMPT))
+        self.messages.append(prompts.LIVE_CHAT_PROMPT)
 
         self.ai_message = None
 
-    def message_bot(self, human_message, transcript, model):
+    def message_bot(self, human_message, transcript):
         """
         Sends a message to the chatbot, and returns the response.
 
@@ -42,19 +48,18 @@ class GPTChat:
             str: The response from the chatbot.
 
         """
-        human_message_with_transcript = HumanMessage(content=f'Transcript: {transcript}, ||| User message: {human_message}')
+        human_message_with_transcript = f'Transcript: {transcript}, ||| User message: {human_message}'
 
         temp_messages = self.messages.copy()
         temp_messages.append(human_message_with_transcript)
-        self.chat.model_name = model
-        self.response = self.chat(temp_messages)
+        self.response = self.chat_cohere(' '.join(temp_messages))
 
-        human_message_without_transcript = HumanMessage(content=human_message)
+        human_message_without_transcript = human_message
         self.messages.append(human_message_without_transcript)
-        ai_message = AIMessage(content=self.response.content)
+        ai_message = self.response
         self.messages.append(ai_message)
 
-        return str(ai_message.content)
+        return str(ai_message)
 
 
     def find_objections(self, transcript):
@@ -68,10 +73,10 @@ class GPTChat:
             str: The objection found in the transcript, or None if no objection was found.
 
         """
-        human_message = HumanMessage(content=transcript)
-        sys_message = SystemMessage(content=prompts.DETECT_OBJECTION_PROMPT)
-        response = self.chat([sys_message, human_message])
-        return response.content
+        human_message = transcript
+        sys_message = prompts.DETECT_OBJECTION_PROMPT
+        response = self.chat_cohere(sys_message + human_message)
+        return response
 
     def generate_response_from_sales_call(self, transcript):
         """
@@ -88,11 +93,11 @@ class GPTChat:
             return None
         else:
             results = self.db.query_db(response)
-            sys_message = SystemMessage(content=prompts.OBJECTION_GUIDELINES_PROMPT)
-            human_message = HumanMessage(content=f'Customer objection: {response}, ||| Relevant guidelines: {results} ||| Transcript: {transcript}')
-            response = self.chat([sys_message, human_message])
-            self.ai_message = AIMessage(content=str(response.content))
-            return response.content
+            sys_message = prompts.OBJECTION_GUIDELINES_PROMPT
+            human_message = f'Customer objection: {response}, ||| Relevant guidelines: {results} ||| Transcript: {transcript}'
+            response = self.chat_cohere(sys_message + human_message)
+            self.ai_message = response
+            return response
 
 
 class SavedTranscriptChat:
@@ -107,13 +112,13 @@ class SavedTranscriptChat:
         Parameters:
             transcript (str): The transcript to use for the chat.
         """
-        self.chat = ChatOpenAI()
+        self.chat = Cohere(cohere_api_key=COHERE_API_KEY)
         self.messages = []
         self.transcript = transcript
-        self.messages.append(SystemMessage(content=prompts.SAVED_TRANSCRIPT_PROMPT))
-        self.messages.append(HumanMessage(content=f' Transcript of sales call: {transcript}'))
+        self.messages.append(prompts.SAVED_TRANSCRIPT_PROMPT)
+        self.messages.append(f' Transcript of sales call: {transcript}')
 
-    def message_bot(self, human_message, model):
+    def message_bot(self, human_message):
         """
         Sends a message to the chatbot, and returns the response.
 
@@ -126,12 +131,11 @@ class SavedTranscriptChat:
         Returns:
             str: The response from the chatbot.
         """
-        self.messages.append(HumanMessage(content=human_message))
-        self.chat.model_name = model
-        response = self.chat(self.messages)
-        ai_message = AIMessage(content=response.content)
+        self.messages.append(human_message)
+        response = self.chat(' '.join(self.messages))
+        ai_message = response
         self.messages.append(ai_message)
-        return response.content
+        return response
 
 
 
